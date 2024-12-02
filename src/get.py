@@ -33,6 +33,11 @@ parser.add_argument(
     metavar='YEAR',
     type=int,
     help='year to pull data from')
+parser.add_argument(
+    '-s',
+    '--sample',
+    action='store_true',
+    help='advent of code user session token')
 
 args = parser.parse_args()
 
@@ -55,7 +60,13 @@ if (date > today):
     print('date cannot be in future')
     exit(1)
 
-url = 'https://adventofcode.com/{}/day/{}/input'.format(date_year, date_day)
-req = requests.get(url, headers={'cookie':'session={}'.format(cookie)})
+if (args.sample):
+    url = 'https://adventofcode.com/{}/day/{}'.format(date_year, date_day)
+    req = requests.get(url, headers={'cookie':'session={}'.format(cookie)})
 
-print(req.text, end='')
+    print(req.text.split('<pre><code>')[1].split('</code></pre>')[0], end='')
+else:
+    url = 'https://adventofcode.com/{}/day/{}/input'.format(date_year, date_day)
+    req = requests.get(url, headers={'cookie':'session={}'.format(cookie)})
+
+    print(req.text, end='')
